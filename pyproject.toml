@@ -1,0 +1,32 @@
+[project]
+name = "calculator-api"
+version = "0.1.0"
+description = "A simple calculator REST API"
+requires-python = ">=3.10"
+dependencies = [
+    "flask>=3.1,<4.0",
+    "flask-sqlalchemy>=3.1,<4.0",
+    "sqlalchemy>=2.0,<3.0",
+    "marshmallow>=3,<4",
+    "flask-marshmallow>=0.15,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[project.scripts]
+calculator-api = "server:main"
+
+[tool.setuptools]
+py-modules = ["server", "core"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pyright]
+typeCheckingMode = "basic"
