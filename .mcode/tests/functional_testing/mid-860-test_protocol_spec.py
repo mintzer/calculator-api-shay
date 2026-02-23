@@ -9,7 +9,7 @@ This script supports two modes:
 1. SRC Validation: Tests endpoints and captures responses (no expected_response)
 2. DST Contract Validation: Tests endpoints and validates responses match expected (has expected_response)
 
-Generated at: 2026-02-23T19:08:47.429374+00:00
+Generated at: 2026-02-23T19:20:41.514344+00:00
 Project: calculator-api-shay
 Milestone: 860
 """
@@ -59,8 +59,8 @@ TEST_CASES = json.loads(r'''[
                 "a": 5.0
             }
         },
-        "expected_status": 400,
-        "description": "Send request with missing 'b' field, expect validation error",
+        "expected_status": 422,
+        "description": "Send request with missing 'b' field, expect FastAPI validation error (422)",
         "setup": null,
         "cleanup": null
     },
@@ -77,8 +77,8 @@ TEST_CASES = json.loads(r'''[
                 "b": 3.0
             }
         },
-        "expected_status": 400,
-        "description": "Send string value for numeric field 'a', expect validation error",
+        "expected_status": 422,
+        "description": "Send string value for numeric field 'a', expect FastAPI validation error (422)",
         "setup": null,
         "cleanup": null
     },
@@ -112,8 +112,8 @@ TEST_CASES = json.loads(r'''[
                 "b": 4.0
             }
         },
-        "expected_status": 400,
-        "description": "Send request with missing 'a' field, expect validation error",
+        "expected_status": 422,
+        "description": "Send request with missing 'a' field, expect FastAPI validation error (422)",
         "setup": null,
         "cleanup": null
     },
@@ -145,11 +145,11 @@ TEST_CASES = json.loads(r'''[
             "query": {},
             "body": {
                 "a": 3.0,
-                "b": true
+                "b": "not_a_number"
             }
         },
-        "expected_status": 400,
-        "description": "Send boolean value for numeric field 'b', expect validation error",
+        "expected_status": 422,
+        "description": "Send string value for numeric field 'b', expect FastAPI validation error (422)",
         "setup": null,
         "cleanup": null
     },
@@ -199,8 +199,8 @@ TEST_CASES = json.loads(r'''[
             "query": {},
             "body": {}
         },
-        "expected_status": 400,
-        "description": "Send empty body to divide endpoint, expect validation error for missing fields",
+        "expected_status": 422,
+        "description": "Send empty body to divide endpoint, expect FastAPI validation error (422) for missing fields",
         "setup": null,
         "cleanup": null
     },
@@ -274,8 +274,8 @@ TEST_CASES = json.loads(r'''[
                 "b": 3.0
             }
         },
-        "expected_status": 400,
-        "description": "Send request without 'operation' field, expect validation error",
+        "expected_status": 422,
+        "description": "Send request without 'operation' field, expect FastAPI validation error (422)",
         "setup": null,
         "cleanup": null
     },
