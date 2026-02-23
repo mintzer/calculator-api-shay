@@ -9,7 +9,7 @@ This script supports two modes:
 1. SRC Validation: Tests endpoints and captures responses (no expected_response)
 2. DST Contract Validation: Tests endpoints and validates responses match expected (has expected_response)
 
-Generated at: 2026-02-23T23:02:10.356544+00:00
+Generated at: 2026-02-23T23:18:52.341501+00:00
 Project: calculator-api-shay
 Milestone: 1
 """
@@ -78,7 +78,7 @@ TEST_CASES = json.loads(r'''[
                 "a": 10
             }
         },
-        "expected_status": 400,
+        "expected_status": 422,
         "setup": null,
         "cleanup": null
     },
@@ -96,7 +96,7 @@ TEST_CASES = json.loads(r'''[
                 "b": 5
             }
         },
-        "expected_status": 400,
+        "expected_status": 422,
         "setup": null,
         "cleanup": null
     },
@@ -147,7 +147,7 @@ TEST_CASES = json.loads(r'''[
             "query": {},
             "body": {}
         },
-        "expected_status": 400,
+        "expected_status": 422,
         "setup": null,
         "cleanup": null
     },
@@ -272,7 +272,171 @@ TEST_CASES = json.loads(r'''[
                 "b": 5
             }
         },
+        "expected_status": 422,
+        "setup": null,
+        "cleanup": null
+    },
+    {
+        "name": "create_calculation_happy_path",
+        "category": "HAPPY_PATH",
+        "endpoint": "/calculations",
+        "method": "POST",
+        "description": "Create a stored calculation with the add operation",
+        "request_data": {
+            "path": {},
+            "query": {},
+            "body": {
+                "operation": "add",
+                "a": 10,
+                "b": 5
+            }
+        },
+        "expected_status": 201,
+        "setup": null,
+        "cleanup": null
+    },
+    {
+        "name": "create_calculation_unknown_operation",
+        "category": "INVALID_INPUT",
+        "endpoint": "/calculations",
+        "method": "POST",
+        "description": "Test that an unknown operation returns HTTP 400",
+        "request_data": {
+            "path": {},
+            "query": {},
+            "body": {
+                "operation": "power",
+                "a": 2,
+                "b": 3
+            }
+        },
         "expected_status": 400,
+        "setup": null,
+        "cleanup": null
+    },
+    {
+        "name": "create_calculation_division_by_zero",
+        "category": "INVALID_INPUT",
+        "endpoint": "/calculations",
+        "method": "POST",
+        "description": "Test that division by zero via calculations endpoint returns HTTP 400",
+        "request_data": {
+            "path": {},
+            "query": {},
+            "body": {
+                "operation": "div",
+                "a": 10,
+                "b": 0
+            }
+        },
+        "expected_status": 400,
+        "setup": null,
+        "cleanup": null
+    },
+    {
+        "name": "list_calculations_happy_path",
+        "category": "HAPPY_PATH",
+        "endpoint": "/calculations",
+        "method": "GET",
+        "description": "List all stored calculations",
+        "request_data": {
+            "path": {},
+            "query": {},
+            "body": null
+        },
+        "expected_status": 200,
+        "setup": null,
+        "cleanup": null
+    },
+    {
+        "name": "get_calculation_happy_path",
+        "category": "HAPPY_PATH",
+        "endpoint": "/calculations/{calculation_id}",
+        "method": "GET",
+        "description": "Get a specific calculation by ID",
+        "request_data": {
+            "path": {
+                "calculation_id": "$setup_id"
+            },
+            "query": {},
+            "body": null
+        },
+        "expected_status": 200,
+        "setup": {
+            "endpoint": "/calculations",
+            "method": "POST",
+            "body": {
+                "operation": "mul",
+                "a": 3,
+                "b": 7
+            },
+            "extract_id_from": "id"
+        },
+        "cleanup": {
+            "endpoint": "/calculations/{calculation_id}",
+            "method": "DELETE",
+            "path": {
+                "calculation_id": "$setup_id"
+            }
+        }
+    },
+    {
+        "name": "get_calculation_not_found",
+        "category": "INVALID_INPUT",
+        "endpoint": "/calculations/{calculation_id}",
+        "method": "GET",
+        "description": "Test that a non-existent calculation ID returns 404",
+        "request_data": {
+            "path": {
+                "calculation_id": 999999
+            },
+            "query": {},
+            "body": null
+        },
+        "expected_status": 404,
+        "setup": null,
+        "cleanup": null
+    },
+    {
+        "name": "delete_calculation_happy_path",
+        "category": "HAPPY_PATH",
+        "endpoint": "/calculations/{calculation_id}",
+        "method": "DELETE",
+        "description": "Delete an existing calculation by ID",
+        "request_data": {
+            "path": {
+                "calculation_id": "$setup_id"
+            },
+            "query": {},
+            "body": null
+        },
+        "expected_status": 204,
+        "setup": {
+            "endpoint": "/calculations",
+            "method": "POST",
+            "body": {
+                "operation": "sub",
+                "a": 20,
+                "b": 5
+            },
+            "extract_id_from": "id"
+        },
+        "cleanup": null
+    },
+    {
+        "name": "delete_calculation_not_found",
+        "category": "INVALID_INPUT",
+        "endpoint": "/calculations/{calculation_id}",
+        "method": "DELETE",
+        "description": "Test that deleting a non-existent calculation returns 404",
+        "request_data": {
+            "path": {
+                "calculation_id": 999999
+            },
+            "query": {},
+            "body": null
+        },
+        "expected_status": 404,
         "setup": null,
         "cleanup": null
     }
