@@ -38,6 +38,9 @@ pip-log.txt
 pip-delete-this-directory.txt
 db.sqlite3
 db.sqlite3-journal
+*.db
+*.db-journal
+instance/
 
 # ----- Node / JavaScript / TypeScript -----
 node_modules/
