@@ -2,8 +2,8 @@
 """A very simple calculator REST API server."""
 
 from contextlib import asynccontextmanager
-from datetime import datetime
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator, Callable
+from datetime import UTC, datetime
 
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
@@ -40,7 +40,7 @@ class Calculation(CalculationBase, table=True):
     """Database model for stored calculations."""
 
     id: int | None = Field(default=None, primary_key=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class CalculationCreate(BaseModel):
@@ -83,7 +83,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 app = FastAPI(title="Calculator API", version="0.1.0", lifespan=lifespan)
 
-OPERATIONS: dict[str, callable] = {  # type: ignore[type-arg]
+OPERATIONS: dict[str, Callable[[float, float], float]] = {
     "add": add,
     "sub": subtract,
     "mul": multiply,
