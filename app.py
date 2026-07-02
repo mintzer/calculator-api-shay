@@ -125,6 +125,8 @@ def create_app(config: dict | None = None) -> Flask:
         data = request.get_json(force=True)
         if data is None:
             return jsonify({"detail": "Request body must be valid JSON"}), 400
+        if not isinstance(data, dict):
+            return jsonify({"detail": "Request body must be a JSON object"}), 400
         operation = data.get("operation")
         if operation not in OPERATIONS:
             return (
