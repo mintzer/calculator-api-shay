@@ -5,7 +5,8 @@ from app import create_app
 @pytest.fixture
 def app():
     app = create_app({"TESTING": True, "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"})
-    yield app
+    with app.app_context():
+        yield app
 
 
 @pytest.fixture
