@@ -47,6 +47,14 @@ def calculation_to_dict(c: Calculation) -> dict:
     }
 
 
+def _get_calculation_or_404(calculation_id: int):
+    """Return (calc, None) on success, or (None, 404-response-tuple) on miss."""
+    calc = db.session.get(Calculation, calculation_id)
+    if calc is None:
+        return None, (jsonify({"detail": "Calculation not found"}), 404)
+    return calc, None
+
+
 def create_app(config: dict | None = None) -> Flask:
     """Application factory."""
     app = Flask(__name__)
@@ -171,17 +179,17 @@ def create_app(config: dict | None = None) -> Flask:
     @app.get("/calculations/<int:calculation_id>")
     def get_calculation(calculation_id: int):
         """Get a specific calculation by ID."""
-        calc = db.session.get(Calculation, calculation_id)
-        if calc is None:
-            return jsonify({"detail": "Calculation not found"}), 404
+        calc, err = _get_calculation_or_404(calculation_id)
+        if err is not None:
+            return err
         return jsonify(calculation_to_dict(calc)), 200
 
     @app.delete("/calculations/<int:calculation_id>")
     def delete_calculation(calculation_id: int):
         """Delete a calculation by ID."""
-        calc = db.session.get(Calculation, calculation_id)
-        if calc is None:
-            return jsonify({"detail": "Calculation not found"}), 404
+        calc, err = _get_calculation_or_404(calculation_id)
+        if err is not None:
+            return err
         db.session.delete(calc)
         db.session.commit()
         return "", 204
