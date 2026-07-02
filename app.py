@@ -92,24 +92,32 @@ def create_app(config: dict | None = None) -> Flask:
     def api_add():
         """Add two numbers."""
         data = request.get_json(force=True)
+        if data is None:
+            return jsonify({"detail": "Request body must be valid JSON"}), 400
         return jsonify({"result": add(data["a"], data["b"])}), 200
 
     @app.post("/subtract")
     def api_subtract():
         """Subtract b from a."""
         data = request.get_json(force=True)
+        if data is None:
+            return jsonify({"detail": "Request body must be valid JSON"}), 400
         return jsonify({"result": subtract(data["a"], data["b"])}), 200
 
     @app.post("/multiply")
     def api_multiply():
         """Multiply two numbers."""
         data = request.get_json(force=True)
+        if data is None:
+            return jsonify({"detail": "Request body must be valid JSON"}), 400
         return jsonify({"result": multiply(data["a"], data["b"])}), 200
 
     @app.post("/divide")
     def api_divide():
         """Divide a by b."""
         data = request.get_json(force=True)
+        if data is None:
+            return jsonify({"detail": "Request body must be valid JSON"}), 400
         try:
             return jsonify({"result": divide(data["a"], data["b"])}), 200
         except ValueError as exc:
