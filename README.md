@@ -11,13 +11,19 @@ pip install -e .
 ## Run
 
 ```bash
-python server.py
+flask --app app run --port 8000
 ```
 
 Or after installing:
 
 ```bash
 calculator-api
+```
+
+For production (Gunicorn):
+
+```bash
+gunicorn -w 4 -b 0.0.0.0:8000 "app:create_app()"
 ```
 
 The server runs on `http://localhost:8000`.
@@ -80,8 +86,3 @@ curl http://localhost:8000/calculations
 curl -X DELETE http://localhost:8000/calculations/1
 ```
 
-## API Docs
-
-FastAPI auto-generates docs at:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc

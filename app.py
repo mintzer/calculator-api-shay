@@ -64,6 +64,18 @@ def create_app(config: dict | None = None) -> Flask:
     # Error handlers
     # ------------------------------------------------------------------
 
+    @app.errorhandler(400)
+    def bad_request(exc):
+        return jsonify({"detail": str(exc) or "Bad request"}), 400
+
+    @app.errorhandler(KeyError)
+    def missing_field(exc):
+        return jsonify({"detail": f"Missing required field: {exc}"}), 400
+
+    @app.errorhandler(TypeError)
+    def invalid_field(exc):
+        return jsonify({"detail": f"Invalid field value: {exc}"}), 400
+
     @app.errorhandler(404)
     def not_found(exc):
         return jsonify({"detail": "Not found"}), 404
