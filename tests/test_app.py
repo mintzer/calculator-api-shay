@@ -43,6 +43,34 @@ def test_divide_by_zero(client):
     assert "detail" in body
 
 
+def test_add_missing_field(client):
+    resp = post_json(client, "/add", {"a": 3})
+    assert resp.status_code == 400
+    body = resp.get_json()
+    assert "detail" in body
+
+
+def test_subtract_missing_field(client):
+    resp = post_json(client, "/subtract", {"b": 3})
+    assert resp.status_code == 400
+    body = resp.get_json()
+    assert "detail" in body
+
+
+def test_add_wrong_type(client):
+    resp = post_json(client, "/add", {"a": 1, "b": "not_a_number"})
+    assert resp.status_code == 400
+    body = resp.get_json()
+    assert "detail" in body
+
+
+def test_multiply_wrong_type(client):
+    resp = post_json(client, "/multiply", {"a": "not_a_number", "b": "also_not_a_number"})
+    assert resp.status_code == 400
+    body = resp.get_json()
+    assert "detail" in body
+
+
 # ------------------------------------------------------------------
 # /calculations CRUD
 # ------------------------------------------------------------------
@@ -68,6 +96,18 @@ def test_create_calculation_unknown_operation(client):
 
 def test_create_calculation_div_by_zero(client):
     resp = post_json(client, "/calculations", {"operation": "div", "a": 5, "b": 0})
+    assert resp.status_code == 400
+    assert "detail" in resp.get_json()
+
+
+def test_create_calculation_missing_a(client):
+    resp = post_json(client, "/calculations", {"operation": "add", "b": 2})
+    assert resp.status_code == 400
+    assert "detail" in resp.get_json()
+
+
+def test_create_calculation_missing_b(client):
+    resp = post_json(client, "/calculations", {"operation": "add", "a": 1})
     assert resp.status_code == 400
     assert "detail" in resp.get_json()
 
