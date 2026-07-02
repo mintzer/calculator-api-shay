@@ -123,6 +123,8 @@ def create_app(config: dict | None = None) -> Flask:
     def create_calculation():
         """Create and store a new calculation."""
         data = request.get_json(force=True)
+        if data is None:
+            return jsonify({"detail": "Request body must be valid JSON"}), 400
         operation = data.get("operation")
         if operation not in OPERATIONS:
             return (
